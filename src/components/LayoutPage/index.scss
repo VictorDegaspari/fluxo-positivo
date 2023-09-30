@@ -1,0 +1,70 @@
+.table-auto {
+    border-collapse: collapse;
+}
+.toolbar {
+    padding-bottom: 160px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.toolbar-header {
+    max-width: 1320px;
+    padding-top: 3.25rem;
+    padding-bottom: 3.25rem;
+}
+.toolbar-content {
+    padding: 30px;
+    margin-top: -160px;
+    border-radius: 30px;
+    max-width: 1320px;
+    background: white;
+
+    @media (max-width: 800px) {
+        padding: 20px;
+    }
+}
+.card {
+    border: 1px solid #F1F1F2;
+    border-radius: 30px;
+}
+.card-header {
+    padding: 0 2.25rem;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    min-height: 70px;
+    align-items: stretch;
+    .input-field {
+        max-width: 250px;
+        @media (max-width: 800px) {
+            max-width: 100%;
+        }
+    }
+    @media (max-width: 800px) {
+        padding: 0 1rem;
+        padding-top: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+}
+.card-body {
+    padding: 0 2.25rem;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    overflow: auto;
+    @media (max-width: 800px) {
+        padding: 0 1rem;
+        padding-top: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+}
+.container-patients {
+    background: #F4F6FA;
+    min-height: 100vh;
+}
+.input-field .input-icon {
+    top: 9px !important;
+}
+.subtitle {
+    opacity: .5;
+    font-size: 1.075rem
+}

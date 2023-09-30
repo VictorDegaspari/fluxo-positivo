@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { Fragment } from "react";
+import {
+  Navigate,
+  Outlet,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 
-function App() {
+import Home from "./pages/home/Home.jsx";
+
+import "./index.scss";
+
+const PrivateRoute = () => {
+  function isAuthenticated() {
+    let token = localStorage.getItem("token");
+    let email = localStorage.getItem("email");
+    if (!token || !email) return true;
+    return true;
+  }
+
+  return isAuthenticated() ? <Outlet /> : <Navigate to="/login" />;
+};
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Fragment>
+        <Routes>
+          <Route exact path="/" element={<PrivateRoute />}>
+            <Route path="/home" element={<Home />} />
+          </Route>
+          <Route exact path="/login" element={<div> </div>} />
+        </Routes>
+      </Fragment>
+    </Router>
   );
 }
-
-export default App;
