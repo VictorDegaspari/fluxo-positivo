@@ -1,0 +1,28 @@
+.modal {
+	background: #575757b9;
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	&.isOpened  {
+		display: block;
+	}
+	.content {
+		pointer-events: all;
+		min-width: 50px;
+		min-height: 50px;
+		background: white;
+		border-radius: 8px;
+		margin: 20px;
+		form {
+			max-height: 90vh;
+			overflow-y: auto;
+		}
+	}
+}

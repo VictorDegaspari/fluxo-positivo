@@ -6,26 +6,29 @@
   min-height: 300px;
   padding: 2rem 2rem 2rem 2rem;
   border-radius: 15px 15px 15px 15px;
-  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  &:hover {
+    border: 1px solid rgba(255, 0, 0, 0.1);
+  }
   .icon {
     border-radius: 0.625rem;
     width: 60px;
     height: 60px;
   }
   .icon_0 {
-    background: var(--bg-purple-light);
+    background: #f8f5ff;
   }
   .icon_1 {
-    background: var(--bg-green-light);
+    background: #e8fff3;
   }
   .icon_2 {
-    background: var(--bg-red-light);
+    background: #fff5f8;
   }
   .icon_3 {
-    background: var(--bg-yellow-light);
+    background: #fff8dd;
   }
   .icon_4 {
-    background: var(--bg-blue-light);
+    background: #f1faff;
   }
   .icon_color_0 {
     color: theme("colors.purple.500");

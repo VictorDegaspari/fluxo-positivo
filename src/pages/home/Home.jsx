@@ -25,12 +25,12 @@ function Home() {
         icon: "edit_calendar",
         description: "Seus produtos ficam aqui e podem ser editados, excluídos ou criados por você",
         active: true,
-        route: "/appointments",
+        route: "/products",
       },
       {
-        name: "Meus pacientes",
+        name: "Doadores",
         icon: "settings_accessibility",
-        description: "Aqui você controla todos seus pacientes, informações do perfil e muito mais!",
+        description: "Aqui você controla todos seus doadores, informações deles e muito mais!",
         active: true,
         route: "/patient",
       },
@@ -51,7 +51,7 @@ function Home() {
       {
         name: "Em breve...",
         icon: "hourglass_empty",
-        description: "Em breve a FitFlow terá novidades e novas funcionalidades, fique por dentro!",
+        description: "Em breve a Fluxo Positivo terá novidades e novas funcionalidades, fique por dentro!",
         active: true,
         route: "",
       },
@@ -70,11 +70,11 @@ function Home() {
           {cards.map(
             (card, index) => card.active && (
               <div
-                className="card cursor-pointer mr-3 mt-3"
+                className={`card cursor-pointer mr-3 mt-3`}
                 key={ index }
                 onClick={() => route(card.route)}
               >
-                <div className="mb-3 icon flex items-center justify-center">
+                <div className={`mb-3 icon flex items-center justify-center icon_${index}`}>
                   <span className={`material-icons-outlined icon_color_${index}`}>
                     { card.icon }
                   </span>

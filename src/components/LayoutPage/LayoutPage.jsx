@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./index.scss";
 
 function LayoutPage(props) {
+  const route = useNavigate();
   const {
     title,
     subtitle,
@@ -10,6 +12,7 @@ function LayoutPage(props) {
     background,
     header,
     body,
+    backButton
   } = props;
 
   return (
@@ -37,9 +40,14 @@ function LayoutPage(props) {
                   </div>
                 ) : null}
               </h2>
-
             </div>
-            <div className="w-full justify-end flex mobile-flex-column" />
+            { backButton && <div className={`flex justify-center items-center`} onClick={() => route('/home')}>
+                <span className="mr-2 material-icons-outlined cursor-pointer text-white">
+                  keyboard_backspace
+                </span>
+                <span className="text-white cursor-pointer">Voltar</span>
+              </div>
+            }
           </div>
         </div>
       </div>
