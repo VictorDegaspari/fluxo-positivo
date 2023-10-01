@@ -81,4 +81,18 @@ body {
     disabled:opacity-70
     dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)]
   }
+
+  input, select {
+    border: 1px solid;
+    padding-left: 8px;
+    @apply
+		inline items-center justify-center w-full rounded-md border-gray-200 text-sm shadow-sm outline-none ;
+    background-color: white;
+		height: 42px;
+  }
+  input:disabled, textarea:disabled, select:disabled {
+		@apply
+		disabled:bg-gray-200
+		disabled:cursor-not-allowed;
+	}
 }

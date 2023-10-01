@@ -10,28 +10,55 @@ function Products() {
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
-
+	const [modalContent, setModalContent] = useState(null);
+	const [formData, setFormData] = useState({});
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+	
 	useEffect(() => {
 		setLoading(true);
 
-		// FIXME Chamar com a API
+		// FIXME chamar api
 		setTimeout(() => {
 			setLoading(false);
 			setData([
-				{ title: 'Absorvax', description: '', size: 'P', type: 'internal'},
-				{ title: 'ABSDOT', description: '', size: 'P', type: 'evening'},
-				{ title: 'Tertax', description: '', size: 'XG', type: 'external'}
+				{ id: 1, title: 'Absorvax', description: 'Teste', size: 'P', type: 'internal'},
+				{ id: 2, title: 'ABSDOT', description: 'Teste', size: 'P', type: 'evening'},
+				{ id: 3, title: 'Tertax', description: 'Teste', size: 'XG', type: 'external'}
 			]);
-		}, 3000);
+		}, 2000);
 
 		const user = JSON.parse(localStorage.getItem("user")) || {};
 		setUserType(user.user_type);
 
 	}, [user_type]);
 
-	function openModal() {
+	function openModal(modalContent) {
+		setModalContent(modalContent)
 		setModalOpened(true);
 	}
+
+	async function deleteProduct(productId) {
+		setData(data.filter(product => product.id !== productId));
+		// FIXME chamar api
+		setModalOpened(false);
+	}
+
+	async function addProduct() {
+		setData([ ...data, { id: Math.random(), ...formData }]);
+		// FIXME chamar api
+		setModalOpened(false);
+	}
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        addProduct();
+    };
 
   	return (
     <LayoutPage
@@ -43,7 +70,43 @@ function Products() {
 		background="linear-gradient(to right, #22c55e, #1a9e4b)"
 		header={
 			<div className="table-header w-full flex items-center justify-end">
-				<button className="btn mr-2 flex items-center" onClick={() => openModal()}>
+				<button className="btn mr-2 flex items-center" onClick={() => openModal(
+					<form onSubmit={(event) => handleSubmit(event)}>
+						<h1>Criar produto</h1>
+						<label className="flex flex-col mt-4">
+							Título:
+							<input name="title" type="text" placeholder="Título do absorvente" onChange={handleInputChange}/>
+						</label>
+						<label className="flex flex-col mt-4">
+							Descrição:
+							<input name="description" type="text" placeholder="Descrição do absorvente" onChange={handleInputChange}/>
+						</label>
+						<label className="flex flex-col mt-4">
+							Tamanho:
+							<select name="size" defaultValue={""} onChange={handleInputChange}>
+								<option value="" hidden>Selecione</option>
+								<option value="P">P</option>
+								<option value="M">M</option>
+								<option value="G">G</option>
+								<option value="XG">XG</option>
+								<option value="XXG">XGG</option>
+							</select>
+						</label>
+						<label className="flex flex-col mt-4">
+							Tipo:
+							<select name="type" defaultValue={""} onChange={handleInputChange}>
+								<option value="" hidden>Selecione</option>
+								<option value="internal">Interno</option>
+								<option value="evening">Noturno</option>
+								<option value="external">Externo</option>
+							</select>
+						</label>
+						<div className="flex items-center justify-end mt-4">
+							<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
+							<button type="submit" className="mr-2 btn">Salvar</button>
+						</div>
+					</form>
+				)}>
 					<span className="material-icons-outlined mr-2">
 						add
 					</span>
@@ -68,11 +131,10 @@ function Products() {
 						Tipo
 					</th>
                     <th className="px-6 py-3" scope="col"></th>
-                    <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.length && data.map((product, index) => (
+                    {data.length > 0 && data.map((product, index) => (
                         <tr
                             key={index}
                             onClick={() => {}}
@@ -100,11 +162,55 @@ function Products() {
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                    <span className="material-icons-outlined mr-2 text-gray-600" onClick={() => openModal()}>
+                                <div className="flex items-center justify-end w-full">
+                                    <span className="material-icons-outlined mr-2 text-gray-600" onClick={() => openModal(
+										<form onSubmit={() => {}}>
+											<h1>Editar produto</h1>
+											<label className="flex flex-col mt-4">
+												Título:
+												<input name="title" value={ product.title } type="text" placeholder="Título do absorvente"/>
+											</label>
+											<label className="flex flex-col mt-4">
+												Descrição:
+												<input name="description" type="text" value={ product.description } placeholder="Título do absorvente"/>
+											</label>
+											<label className="flex flex-col mt-4">
+												Tamanho:
+												<select name="size" placeholder="Título do absorvente" defaultValue={product.size}>
+													<option value="" hidden>Selecione</option>
+													<option value="P">P</option>
+													<option value="M">M</option>
+													<option value="G">G</option>
+													<option value="XG">XG</option>
+													<option value="XXG">XGG</option>
+												</select>
+											</label>
+											<label className="flex flex-col mt-4">
+												Tipo:
+												<select name="type" defaultValue={product.type}>
+													<option value="" hidden>Selecione</option>
+													<option value="internal">Interno</option>
+													<option value="evening">Noturno</option>
+													<option value="external">Externo</option>
+												</select>
+											</label>
+											<div className="flex items-center justify-end mt-4">
+												<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
+												<button type="submit" className="mr-2 btn">Editar</button>
+											</div>
+										</form>
+									)}>
                                         edit
                                     </span>
-                                    <span className="material-icons-outlined mr-2 text-red-500" onClick={() => openModal()}>
+                                    <span className="material-icons-outlined mr-2 text-red-500" onClick={() => openModal(
+										<div>
+											<span>Deseja realmente excluir esse produto?</span>
+											<div className="flex items-center justify-end mt-4">
+												<button className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
+												<button className="mr-2 btn" onClick={() => deleteProduct(product.id)}>Confirmar</button>
+											</div>
+										</div>
+									)}>
                                         delete
                                     </span>
                                 </div>
@@ -128,15 +234,7 @@ function Products() {
                 </div>
             )}
 
-			{ modalOpened && <Modal opened={(e) => setModalOpened(e)} body={
-				<div>
-					<span>Deseja realmente excluir esse produto?</span>
-					<div className="flex items-center justify-end mt-4">
-						<button className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
-						<button className="mr-2 btn">Confirmar</button>
-					</div>
-				</div>
-			}/>}
+			{ modalOpened && <Modal opened={(e) => setModalOpened(e)} body={ modalContent }/>}
         </div>
 	}></LayoutPage>);
 }
