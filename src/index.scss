@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -16,20 +15,19 @@ body {
   display: flex;
 
   @media (max-width: 800px) {
-      :first-child {
-          margin-right: 0 !important;
-      }
-      input:first-child, button:first-child {
-          margin-bottom: 16px !important;
-      }
-      flex-direction: column;
+    :first-child {
+        margin-right: 0 !important;
+    }
+    input:first-child, button:first-child {
+        margin-bottom: 16px !important;
+    }
+    flex-direction: column;
   }
 }
 
 @layer components {
   button.btn {
-    @apply
-    flex
+    @apply flex
     items-center
     justify-center
     rounded
@@ -46,11 +44,7 @@ body {
     ease-in-out
     hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]
     focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]
-    focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]
-    dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)]
-    dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
-    dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
-    dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)];
+    focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)];
 
     background-color: rgb(59 113 202);
     height: 42px;
@@ -70,16 +64,14 @@ body {
     }
   }
   button:disabled {
-    @apply
-    cursor-not-allowed
+    @apply cursor-not-allowed
     pointer-events-none
     text-white
     shadow-[0_4px_9px_-4px_#3b71ca]
     transition
     duration-150
     ease-in-out
-    disabled:opacity-70
-    dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)]
+    disabled:opacity-70;
   }
 
   input, select {
