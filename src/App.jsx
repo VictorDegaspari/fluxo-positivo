@@ -8,7 +8,9 @@ import {
 } from "react-router-dom";
 
 import Home from "./pages/home/Home.jsx";
+import Partners from "./pages/partners/Partners.jsx";
 import Products from "./pages/products/Products.jsx";
+import Stock from "./pages/stock/Stock.jsx";
 
 import "./index.scss";
 
@@ -31,6 +33,8 @@ export default function App() {
           <Route exact path="/" element={<PrivateRoute />}>
             <Route path="/home" element={<Home />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/stock" element={<Stock />} />
           </Route>
           <Route exact path="/login" element={<div> </div>} />
         </Routes>

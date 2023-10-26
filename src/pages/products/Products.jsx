@@ -60,6 +60,46 @@ function Products() {
         addProduct();
     };
 
+	const productForm = (product) => {
+		return (
+			<form onSubmit={() => {}}>
+				<h1>Editar produto</h1>
+				<label className="flex flex-col mt-4">
+					Título:
+					<input name="title" value={ product.title } type="text" placeholder="Título do absorvente"/>
+				</label>
+				<label className="flex flex-col mt-4">
+					Descrição:
+					<input name="description" type="text" value={ product.description } placeholder="Título do absorvente"/>
+				</label>
+				<label className="flex flex-col mt-4">
+					Tamanho:
+					<select name="size" placeholder="Título do absorvente" defaultValue={product.size}>
+						<option value="" hidden>Selecione</option>
+						<option value="P">P</option>
+						<option value="M">M</option>
+						<option value="G">G</option>
+						<option value="XG">XG</option>
+						<option value="XXG">XGG</option>
+					</select>
+				</label>
+				<label className="flex flex-col mt-4">
+					Tipo:
+					<select name="type" defaultValue={product.type}>
+						<option value="" hidden>Selecione</option>
+						<option value="internal">Interno</option>
+						<option value="evening">Noturno</option>
+						<option value="external">Externo</option>
+					</select>
+				</label>
+				<div className="flex items-center justify-end mt-4">
+					<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
+					<button type="submit" className="mr-2 btn">Editar</button>
+				</div>
+			</form>
+		);
+	}
+
   	return (
     <LayoutPage
 		title="Absorventes disponíveis"
@@ -75,15 +115,15 @@ function Products() {
 						<h1>Criar produto</h1>
 						<label className="flex flex-col mt-4">
 							Título:
-							<input name="title" type="text" placeholder="Título do absorvente" onChange={handleInputChange}/>
+							<input required name="title" type="text" placeholder="Título do absorvente" onChange={handleInputChange}/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Descrição:
-							<input name="description" type="text" placeholder="Descrição do absorvente" onChange={handleInputChange}/>
+							<input required name="description" type="text" placeholder="Descrição do absorvente" onChange={handleInputChange}/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Tamanho:
-							<select name="size" defaultValue={""} onChange={handleInputChange}>
+							<select required name="size" defaultValue={""} onChange={handleInputChange}>
 								<option value="" hidden>Selecione</option>
 								<option value="P">P</option>
 								<option value="M">M</option>
@@ -94,7 +134,7 @@ function Products() {
 						</label>
 						<label className="flex flex-col mt-4">
 							Tipo:
-							<select name="type" defaultValue={""} onChange={handleInputChange}>
+							<select required name="type" defaultValue={""} onChange={handleInputChange}>
 								<option value="" hidden>Selecione</option>
 								<option value="internal">Interno</option>
 								<option value="evening">Noturno</option>
@@ -120,7 +160,6 @@ function Products() {
             <table className="w-full text-sm text-left text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                    <th className="p-4" scope="col"></th>
                     <th className="px-6 py-3" scope="col">
                         Nome
                     </th>
@@ -140,66 +179,23 @@ function Products() {
                             onClick={() => {}}
                             className={`border-b cursor-pointer hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
                         >
-                            <td className="w-4 p-4">
-                                <div className="flex items-center">
-                                    <label htmlFor={`checkbox-table-search-${index}`} className="sr-only">
-                                        checkbox
-                                    </label>
-                                </div>
-                            </td>
-                            <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap" scope="row">
+                            <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap" scope="row" onClick={() => openModal(productForm(product))}>
 								<span className="font-normal text-gray-900 whitespace-nowrap">{ product.title }</span>
                             </th>
-                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-900" onClick={() => openModal(productForm(product))}>
 								{ product.size }
 							</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-900" onClick={() => openModal(productForm(product))}>
 								{ product.type === 'evening' ? 'Noturno' : (product.type === 'internal' ? 'Interno' : 'Diário')  }
 							</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-6 py-4 whitespace-nowrap" onClick={() => openModal(productForm(product))}>
                                 <span className="font-normal text-gray-900 cursor-pointer hover:underline whitespace-nowrap">
                                     Ver Produto
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-end w-full">
-                                    <span className="material-icons-outlined mr-2 text-gray-600" onClick={() => openModal(
-										<form onSubmit={() => {}}>
-											<h1>Editar produto</h1>
-											<label className="flex flex-col mt-4">
-												Título:
-												<input name="title" value={ product.title } type="text" placeholder="Título do absorvente"/>
-											</label>
-											<label className="flex flex-col mt-4">
-												Descrição:
-												<input name="description" type="text" value={ product.description } placeholder="Título do absorvente"/>
-											</label>
-											<label className="flex flex-col mt-4">
-												Tamanho:
-												<select name="size" placeholder="Título do absorvente" defaultValue={product.size}>
-													<option value="" hidden>Selecione</option>
-													<option value="P">P</option>
-													<option value="M">M</option>
-													<option value="G">G</option>
-													<option value="XG">XG</option>
-													<option value="XXG">XGG</option>
-												</select>
-											</label>
-											<label className="flex flex-col mt-4">
-												Tipo:
-												<select name="type" defaultValue={product.type}>
-													<option value="" hidden>Selecione</option>
-													<option value="internal">Interno</option>
-													<option value="evening">Noturno</option>
-													<option value="external">Externo</option>
-												</select>
-											</label>
-											<div className="flex items-center justify-end mt-4">
-												<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
-												<button type="submit" className="mr-2 btn">Editar</button>
-											</div>
-										</form>
-									)}>
+                                    <span className="material-icons-outlined mr-2 text-gray-600" onClick={() => openModal(productForm(product))}>
                                         edit
                                     </span>
                                     <span className="material-icons-outlined mr-2 text-red-500" onClick={() => openModal(

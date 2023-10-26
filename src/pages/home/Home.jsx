@@ -15,14 +15,14 @@ function Home() {
     setCards([
       {
         name: "Estoque de absorventes",
-        icon: "menu_book",
+        icon: "inventory",
         description: "Absorventes para seu paciente, você pode gerar controlar o estoque de produtos quando quiser!",
         active: true,
-        route: "/prescriptions",
+        route: "/stock",
       },
       {
         name: "Produtos",
-        icon: "edit_calendar",
+        icon: "inventory_2",
         description: "Seus produtos ficam aqui e podem ser editados, excluídos ou criados por você",
         active: true,
         route: "/products",
@@ -39,7 +39,7 @@ function Home() {
         icon: "manage_accounts",
         description: "Gerencie os parceiros e marcas para conseguir cadastrar produtos e gerencia-los",
         active: true,
-        route: "",
+        route: "/partners",
       },
       {
         name: "Meu Perfil",
