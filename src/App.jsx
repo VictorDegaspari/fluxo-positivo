@@ -7,9 +7,9 @@ import {
   Routes,
 } from "react-router-dom";
 
+import Brand from "./pages/brand/Brand.jsx";
 import Donor from "./pages/donor/Donor.jsx";
 import Home from "./pages/home/Home.jsx";
-import Partners from "./pages/partners/Partners.jsx";
 import Products from "./pages/products/Products.jsx";
 import Profile from "./pages/profile/Profile.jsx";
 import Stock from "./pages/stock/Stock.jsx";
@@ -35,7 +35,7 @@ export default function App() {
           <Route exact path="/" element={<PrivateRoute />}>
             <Route path="/home" element={<Home />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/partners" element={<Partners />} />
+            <Route path="/brand" element={<Brand />} />
             <Route path="/stock" element={<Stock />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/donor" element={<Donor />} />

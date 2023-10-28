@@ -1,42 +1,39 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { get, post, remove, update } from '../../api';
 import LayoutPage from "../../components/LayoutPage/LayoutPage";
 import Modal from "../../components/Modal/Modal";
 import Spinner from "../../components/Spinner/Spinner";
 import "./index.scss";
 
 function Products() {
-	const [user_type, setUserType] = useState("");
 	const [searchQuery, setSearchQuery] = useState('');
 	const [data, setData] = useState([]);
+	const [brands, setBrands] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [loadingEdit, setLoadingEdit] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-	const [formData, setFormData] = useState({});
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-	
+	const baseUrl = process.env.REACT_APP_API_URL;
+	const route = useNavigate();
+
 	useEffect(() => {
 		setLoading(true);
-
-		// FIXME chamar api
-		setTimeout(() => {
+		async function getProducts() {
+			const { products } = await get(baseUrl + '/products/get/');
 			setLoading(false);
-			setData([
-				{ id: 1, name: 'Absorvax', description: 'Teste', size: 'P', type: 'internal'},
-				{ id: 2, name: 'ABSDOT', description: 'Teste', size: 'P', type: 'evening'},
-				{ id: 3, name: 'Tertax', description: 'Teste', size: 'XG', type: 'external'}
-			]);
-		}, 2000);
-
-		const user = JSON.parse(localStorage.getItem("user")) || {};
-		setUserType(user.user_type);
-
-	}, [user_type]);
+			if (!products) return;
+			setData(products);
+		}
+		async function getBrands() {
+			const { brands } = await get(baseUrl + '/brands/get/');
+			setLoading(false);
+			if (!brands) return;
+			setBrands(brands);
+		}
+		getProducts();
+		getBrands();
+	}, [baseUrl]);
 
 	function openModal(modalContent) {
 		setModalContent(modalContent)
@@ -44,25 +41,72 @@ function Products() {
 	}
 
 	async function deleteProduct(productId) {
-		setData(data.filter(product => product.id !== productId));
-		// FIXME chamar api
+		setData(data.filter(product => product._id !== productId));
 		setModalOpened(false);
+		await remove(baseUrl + '/products/remove/' + encodeURI(productId), );
 	}
 
-	async function addProduct() {
-		setData([ ...data, { id: Math.random(), ...formData }]);
-		// FIXME chamar api
-		setModalOpened(false);
+	async function editProduct(e, product) {
+        e.preventDefault();
+		const editedData = new FormData(e.target);
+		const jsonData = {};
+	
+		editedData.forEach((value, key) => {
+			jsonData[key] = key === 'flap' ? (value === 'on' ? true : false) : value;	
+		});
+		const hasFlap = Object.keys(jsonData).includes('flap');
+		if (!hasFlap) {
+			jsonData.flap = false;
+		}
+        try {
+            const response = await update(baseUrl + '/products/update/' + encodeURI(product._id), jsonData);
+            if (response.info?.type === 'Error') throw new Error();
+			const index = data.findIndex(item => item._id === response.updatedProduct._id);
+			const updatedItems = data;
+			updatedItems[index] = response.updatedProduct;
+		
+			setData(updatedItems);
+            setLoadingEdit(false);
+			setModalOpened(false);
+        } catch (error) {
+            console.error(error);
+            setLoadingEdit(false);
+			setModalOpened(false);
+        }
 	}
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        addProduct();
+
+		const editedData = new FormData(event.target);
+		const jsonData = {};
+	
+		editedData.forEach((value, key) => {
+			jsonData[key] = key === 'flap' ? (value === 'on' ? true : false) : value;	
+		});
+		const hasFlap = Object.keys(jsonData).includes('flap');
+		if (!hasFlap) {
+			jsonData.flap = false;
+		}
+		setLoading(true);
+		try {
+            const response = await post(baseUrl + '/products/post/', jsonData);
+            if (response.info?.type === 'Error') throw new Error();
+			const oldData = data;
+			oldData.push(response.product);
+			setData(oldData);
+            setLoading(false);
+			setModalOpened(false);
+
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
     };
 
 	const productForm = (product) => {
 		return (
-			<form onSubmit={() => {}}>
+			<form onSubmit={(e) => { setLoadingEdit(true); editProduct(e, product)}}>
 				<h1>Editar produto</h1>
 				<label className="flex flex-col mt-4">
 					Título:
@@ -70,7 +114,7 @@ function Products() {
 				</label>
 				<label className="flex flex-col mt-4">
 					Descrição:
-					<input name="description" type="text" defaultValue={ product.description } placeholder="Título do absorvente" onChange={handleInputChange}/>
+					<input name="description" type="text" defaultValue={ product.description } placeholder="Descrição do absorvente"/>
 				</label>
 				<label className="flex flex-col mt-4">
 					Tamanho:
@@ -92,9 +136,33 @@ function Products() {
 						<option value="external">Externo</option>
 					</select>
 				</label>
+				<label className="flex flex-col mt-4">
+					Marca:
+					<select name="brand" defaultValue={product.brand}>
+						{brands.map(item => (
+							<option key={item._id} value={item._id}>
+								{item.name}
+							</option>
+						))}
+					</select>
+				</label>
+				<label className="flex mt-4 items-center justify-between" >
+					Possui aba:
+					<input
+						name="flap"
+						style={{ width: 'auto' }}
+						type="checkbox"
+						defaultChecked={product.flap}
+					/>
+				</label>
 				<div className="flex items-center justify-end mt-4">
 					<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
-					<button type="submit" className="mr-2 btn">Editar</button>
+					<button type="submit" className="mr-2 btn">
+						<span className={ `material-icons-outlined mr-2 ${ loadingEdit ? 'animate-spin' : '' }` }>
+							{ loadingEdit ? 'autorenew' : '' }
+						</span>
+						Editar
+					</button>
 				</div>
 			</form>
 		);
@@ -128,15 +196,15 @@ function Products() {
 						<h1>Criar produto</h1>
 						<label className="flex flex-col mt-4">
 							Título:
-							<input required name="name" type="text" placeholder="Nome do absorvente" onChange={handleInputChange}/>
+							<input required name="name" type="text" placeholder="Nome do absorvente"/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Descrição:
-							<input required name="description" type="text" placeholder="Descrição do absorvente" onChange={handleInputChange}/>
+							<input required name="description" type="text" placeholder="Descrição do absorvente"/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Tamanho:
-							<select required name="size" defaultValue={""} onChange={handleInputChange}>
+							<select required name="size" defaultValue={""}>
 								<option value="" hidden>Selecione</option>
 								<option value="P">P</option>
 								<option value="M">M</option>
@@ -147,12 +215,36 @@ function Products() {
 						</label>
 						<label className="flex flex-col mt-4">
 							Tipo:
-							<select required name="type" defaultValue={""} onChange={handleInputChange}>
+							<select required name="type" defaultValue={""}>
 								<option value="" hidden>Selecione</option>
 								<option value="internal">Interno</option>
 								<option value="evening">Noturno</option>
 								<option value="external">Externo</option>
 							</select>
+						</label>
+						<label className="flex flex-col mt-4">
+							Marca:
+							<div className="flex items-center">
+								{ brands && brands.length && <select defaultValue={""}>
+									<option value="" hidden>Selecione</option>
+									{brands.map(item => (
+										<option key={item._id} value={item._id}>
+											{item.name}
+										</option>
+									))}
+								</select> }
+								<button type="button" onClick={() => route('/brand')} className="flex items-center ml-2 btn">
+									<span className="material-icons-outlined">add</span>
+								</button>
+							</div>
+						</label>
+						<label className="flex mt-4 items-center justify-between" >
+							Possui aba:
+							<input
+								name="flap"
+								style={{ width: 'auto' }}
+								type="checkbox"
+							/>
 						</label>
 						<div className="flex items-center justify-end mt-4">
 							<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
@@ -216,7 +308,7 @@ function Products() {
 											<span>Deseja realmente excluir esse produto?</span>
 											<div className="flex items-center justify-end mt-4">
 												<button className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
-												<button className="mr-2 btn" onClick={() => deleteProduct(product.id)}>Confirmar</button>
+												<button className="mr-2 btn" onClick={() => deleteProduct(product._id)}>Confirmar</button>
 											</div>
 										</div>
 									)}>

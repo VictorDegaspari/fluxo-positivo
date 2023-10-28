@@ -28,18 +28,18 @@ function Home() {
         route: "/products",
       },
       {
-        name: "Doadores",
+        name: "Doadores e Parceiros",
         icon: "settings_accessibility",
-        description: "Aqui você controla todos seus doadores, informações deles e muito mais!",
+        description: "Aqui você controla todos seus doadores e parceiros, informações deles e muito mais!",
         active: true,
         route: "/donor",
       },
       {
-        name: "Parceiros Fluxo Positivo",
+        name: "Marcas",
         icon: "manage_accounts",
-        description: "Gerencie os parceiros e marcas para conseguir cadastrar produtos e gerencia-los",
+        description: "Gerencie as marcas para conseguir cadastrar produtos e gerencia-los",
         active: true,
-        route: "/partners",
+        route: "/brand",
       },
       {
         name: "Meu Perfil",
