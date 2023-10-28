@@ -32,7 +32,7 @@ function Home() {
         icon: "settings_accessibility",
         description: "Aqui você controla todos seus doadores, informações deles e muito mais!",
         active: true,
-        route: "/patient",
+        route: "/donor",
       },
       {
         name: "Parceiros Fluxo Positivo",
@@ -46,7 +46,7 @@ function Home() {
         icon: "settings",
         description: "Edite seu perfil e configurações do mesmo",
         active: true,
-        route: "",
+        route: "/profile",
       },
       {
         name: "Em breve...",

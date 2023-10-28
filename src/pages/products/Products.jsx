@@ -27,9 +27,9 @@ function Products() {
 		setTimeout(() => {
 			setLoading(false);
 			setData([
-				{ id: 1, title: 'Absorvax', description: 'Teste', size: 'P', type: 'internal'},
-				{ id: 2, title: 'ABSDOT', description: 'Teste', size: 'P', type: 'evening'},
-				{ id: 3, title: 'Tertax', description: 'Teste', size: 'XG', type: 'external'}
+				{ id: 1, name: 'Absorvax', description: 'Teste', size: 'P', type: 'internal'},
+				{ id: 2, name: 'ABSDOT', description: 'Teste', size: 'P', type: 'evening'},
+				{ id: 3, name: 'Tertax', description: 'Teste', size: 'XG', type: 'external'}
 			]);
 		}, 2000);
 
@@ -66,11 +66,11 @@ function Products() {
 				<h1>Editar produto</h1>
 				<label className="flex flex-col mt-4">
 					Título:
-					<input name="title" value={ product.title } type="text" placeholder="Título do absorvente"/>
+					<input name="name" defaultValue={ product.name } type="text" placeholder="Título do absorvente"/>
 				</label>
 				<label className="flex flex-col mt-4">
 					Descrição:
-					<input name="description" type="text" value={ product.description } placeholder="Título do absorvente"/>
+					<input name="description" type="text" defaultValue={ product.description } placeholder="Título do absorvente" onChange={handleInputChange}/>
 				</label>
 				<label className="flex flex-col mt-4">
 					Tamanho:
@@ -104,18 +104,31 @@ function Products() {
     <LayoutPage
 		title="Absorventes disponíveis"
 		subtitle="Gerencie os seus absorventes aqui"
-		icon="female"
+		icon="inventory_2"
 		backButton={true}
 		bodyStyle="overflow: initial !important "
 		background="linear-gradient(to right, #22c55e, #1a9e4b)"
 		header={
-			<div className="table-header w-full flex items-center justify-end">
+			<div className="table-header w-full flex items-center justify-between">
+				<div className="relative">
+					<input
+						className="block w-full py-2 px-3 rounded-lg border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						type="text"
+						placeholder="Buscar absorvente"
+						onChange={() => {}}
+					/>
+					<div className="absolute top-3 right-0 flex items-center pr-3 pointer-events-none">
+						<span className="material-icons-outlined">
+							search
+						</span>
+					</div>
+				</div>
 				<button className="btn mr-2 flex items-center" onClick={() => openModal(
 					<form onSubmit={(event) => handleSubmit(event)}>
 						<h1>Criar produto</h1>
 						<label className="flex flex-col mt-4">
 							Título:
-							<input required name="title" type="text" placeholder="Título do absorvente" onChange={handleInputChange}/>
+							<input required name="name" type="text" placeholder="Nome do absorvente" onChange={handleInputChange}/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Descrição:
@@ -180,7 +193,7 @@ function Products() {
                             className={`border-b cursor-pointer hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
                         >
                             <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap" scope="row" onClick={() => openModal(productForm(product))}>
-								<span className="font-normal text-gray-900 whitespace-nowrap">{ product.title }</span>
+								<span className="font-normal text-gray-900 whitespace-nowrap">{ product.name }</span>
                             </th>
                             <td className="px-6 py-4 whitespace-nowrap text-gray-900" onClick={() => openModal(productForm(product))}>
 								{ product.size }
