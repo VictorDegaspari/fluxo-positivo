@@ -47,7 +47,7 @@ function Profile() {
     <LayoutPage
 		title="Meu perfil"
 		subtitle="Gerencie o seu perfil aqui"
-		icon="female"
+		icon="settings"
 		backButton={true}
 		bodyStyle="overflow: initial !important "
 		background="linear-gradient(to right, #3b82f6, #74c9f7)"

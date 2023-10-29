@@ -1,55 +1,103 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { get, post, remove, update } from '../../api';
 import LayoutPage from "../../components/LayoutPage/LayoutPage";
 import Modal from "../../components/Modal/Modal";
 import Spinner from "../../components/Spinner/Spinner";
 import "./index.scss";
 
 function Donor() {
-	const [user_type, setUserType] = useState("");
-	const [searchQuery, setSearchQuery] = useState('');
 	const [data, setData] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-	const [formData, setFormData] = useState({});
     const baseUrl = process.env.REACT_APP_API_URL;
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
 	
 	useEffect(() => {
 		setLoading(true);
-
-
-	}, []);
+		async function getDonors() {
+			const { donors } = await get(baseUrl + '/donors/get/');
+			setLoading(false);
+			if (!donors) return;
+			setData(donors);
+		}
+		getDonors();
+	}, [baseUrl]);
 
 	function openModal(modalContent) {
 		setModalContent(modalContent)
 		setModalOpened(true);
 	}
 
-	async function deleteProduct(productId) {
-		setData(data.filter(product => product.id !== productId));
-		// FIXME chamar api
+	async function deleteDonor(stockId) {
+		setData(data.filter(product => product._id !== stockId));
 		setModalOpened(false);
+		try {
+			await remove(baseUrl + '/donors/remove/' + encodeURI(stockId));
+			toast.success("Doador removido com sucesso!");
+		} catch (error) {
+			toast.error("Erro ao deletar Doador");
+            console.error(error);
+		}
 	}
 
-	async function addProduct() {
-		setData([ ...data, { id: Math.random(), ...formData }]);
-		// FIXME chamar api
-		setModalOpened(false);
+	async function editDonor(e, donor) {
+        e.preventDefault();
+		const editedData = new FormData(e.target);
+		const jsonData = {};
+	
+		editedData.forEach((value, key) => {
+			jsonData[key] = value;	
+		});
+
+        try {
+            const response = await update(baseUrl + '/donors/update/' + encodeURI(donor._id), jsonData);
+            if (response.info?.type === 'Error') throw new Error();
+			const index = data.findIndex(item => item._id === response.updatedDonor._id);
+			const updatedItems = data;
+			updatedItems[index] = response.updatedDonor;
+			toast.success("Doador atualizado com sucesso!");
+			setData(updatedItems);
+            setLoading(false);
+			setModalOpened(false);
+        } catch (error) {
+			toast.error("Erro ao atualizar Doador");
+            console.error(error);
+            setLoading(false);
+			setModalOpened(false);
+        }
 	}
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        addProduct();
+		const editedData = new FormData(event.target);
+		const jsonData = {};
+	
+		editedData.forEach((value, key) => {
+			jsonData[key] = value;	
+		});
+
+		setLoading(true);
+		try {
+			const response = await post(baseUrl + '/donors/post/', jsonData);
+            setLoading(false);
+            if (response.info?.type === 'Error') return toast.error("Doador com esse email já existe");
+			const { donor } = response;
+			const oldData = data;
+			oldData.push(donor);
+			setData(oldData);
+			toast.success("Doador adicionado com sucesso!");
+			setModalOpened(false);
+        } catch (error) {
+			toast.error("Erro ao adicionar Doador");
+            console.error(error);
+            setLoading(false);
+        }
     };
 
   	return (
+	<>
     <LayoutPage
 		title="Doadores"
 		subtitle="Gerencie seus doadores aqui"
@@ -77,19 +125,19 @@ function Donor() {
 						<h1>Criar parceiro/doador</h1>
 						<label className="flex flex-col mt-4">
 							Nome:
-							<input required name="name" type="text" placeholder="Nome do parceiro/doador" onChange={handleInputChange}/>
+							<input required name="name" type="text" placeholder="Nome do parceiro/doador"/>
 						</label>
 						<label className="flex flex-col mt-4">
 							E-mail:
-							<input required name="email" type="email" placeholder="E-mail do parceiro/doador" onChange={handleInputChange}/>
+							<input name="email" type="email" placeholder="E-mail do parceiro/doador"/>
 						</label>
                         <label className="flex flex-col mt-4">
 							Telefone:
-							<input required name="phone" type="text" placeholder="Telefone do parceiro/doador" onChange={handleInputChange}/>
+							<input name="phone" type="text" placeholder="Telefone do parceiro/doador"/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Tipo:
-							<select required name="size" defaultValue={""} onChange={handleInputChange}>
+							<select required name="type" defaultValue={""}>
 								<option value="" hidden>Selecione</option>
 								<option value="partner">Parceiro</option>
 								<option value="donor">Doador</option>
@@ -122,16 +170,15 @@ function Donor() {
                         Contato
                     </th>
                     <th className="px-6 py-3" scope="col">
-						Data da conexão
+						Tipo
 					</th>
                     <th className="px-6 py-3" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.length > 0 && data.map((product, index) => (
+                    {data.length > 0 && data.map((donor, index) => (
                         <tr
                             key={index}
-                            onClick={() => {}}
                             className={`border-b cursor-pointer hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
                         >
                             <td className="w-4 p-4">
@@ -142,13 +189,20 @@ function Donor() {
                                 </div>
                             </td>
                             <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap" scope="row">
-								<span className="font-normal text-gray-900 whitespace-nowrap">{ product.title }</span>
+								<span className="font-normal text-gray-900 whitespace-nowrap">{ donor.name }</span>
                             </th>
                             <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-								{ product.size }
+								<div className="flex flex-col">
+									<span className="font-normal text-gray-900 whitespace-nowrap">
+										{ donor.email }
+									</span>
+									<span className="font-normal text-gray-900 whitespace-nowrap">
+										{ donor.phone }
+									</span>
+								</div>
 							</td>
                             <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-								{ product.type === 'partner' ? 'Parceiro' : 'Doador'  }
+								{ donor.type === 'partner' ? 'Parceiro' : 'Doador'  }
 							</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <span className="font-normal text-gray-900 cursor-pointer hover:underline whitespace-nowrap">
@@ -158,34 +212,26 @@ function Donor() {
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-end w-full">
                                     <span className="material-icons-outlined mr-2 text-gray-600" onClick={() => openModal(
-										<form onSubmit={() => {}}>
-											<h1>Editar parceiro</h1>
+										<form onSubmit={(e) => editDonor(e, donor)}>
+											<h1>Editar parceiro/doador</h1>
 											<label className="flex flex-col mt-4">
-												Título:
-												<input name="title" value={ product.title } type="text" placeholder="Título do absorvente"/>
+												Nome:
+												<input required name="name" defaultValue={ donor.name } type="text" placeholder="Nome do doador"/>
 											</label>
 											<label className="flex flex-col mt-4">
-												Descrição:
-												<input name="description" type="text" value={ product.description } placeholder="Título do absorvente"/>
+												E-mail:
+												<input name="email" type="email" defaultValue={ donor.email } placeholder="E-mail do doador"/>
 											</label>
 											<label className="flex flex-col mt-4">
-												Tamanho:
-												<select name="size" placeholder="Título do absorvente" defaultValue={product.size}>
-													<option value="" hidden>Selecione</option>
-													<option value="P">P</option>
-													<option value="M">M</option>
-													<option value="G">G</option>
-													<option value="XG">XG</option>
-													<option value="XXG">XGG</option>
-												</select>
+												Telefone:
+												<input name="phone" type="text" defaultValue={ donor.phone } placeholder="Telefone do doador"/>
 											</label>
 											<label className="flex flex-col mt-4">
 												Tipo:
-												<select name="type" defaultValue={product.type}>
+												<select required name="type" defaultValue={donor.type}>
 													<option value="" hidden>Selecione</option>
-													<option value="internal">Interno</option>
-													<option value="evening">Noturno</option>
-													<option value="external">Externo</option>
+													<option value="donor">Doador</option>
+													<option value="partner">Parceiro</option>
 												</select>
 											</label>
 											<div className="flex items-center justify-end mt-4">
@@ -201,7 +247,7 @@ function Donor() {
 											<span>Deseja realmente excluir esse produto?</span>
 											<div className="flex items-center justify-end mt-4">
 												<button className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
-												<button className="mr-2 btn" onClick={() => deleteProduct(product.id)}>Confirmar</button>
+												<button className="mr-2 btn" onClick={() => deleteDonor(donor._id)}>Confirmar</button>
 											</div>
 										</div>
 									)}>
@@ -230,7 +276,20 @@ function Donor() {
 
 			{ modalOpened && <Modal opened={(e) => setModalOpened(e)} body={ modalContent }/>}
         </div>
-	}></LayoutPage>);
+	}></LayoutPage>	
+	<ToastContainer
+		position="top-right"
+		autoClose={5000}
+		hideProgressBar={false}
+		newestOnTop={false}
+		closeOnClick
+		rtl={false}
+		pauseOnFocusLoss={false}
+		draggable={false}
+		pauseOnHover={false}
+		theme="colored"
+	/>
+	</>);
 }
 
 export default Donor;

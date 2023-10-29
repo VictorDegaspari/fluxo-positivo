@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { get } from '../../api';
+import { get, post, remove, update } from '../../api';
 import LayoutPage from "../../components/LayoutPage/LayoutPage";
 import Modal from "../../components/Modal/Modal";
 import Spinner from "../../components/Spinner/Spinner";
@@ -32,14 +32,70 @@ function Brand() {
 		setModalOpened(true);
 	}
 
-	async function deleteProduct(productId) {
-		setData(data.filter(product => product.id !== productId));
-		// FIXME chamar api
+	async function deleteBrand(brandId) {
+		setData(data.filter(brand => brand._id !== brandId));
 		setModalOpened(false);
+		try {
+			await remove(baseUrl + '/brands/remove/' + encodeURI(brandId));
+			toast.success("Marca removida com sucesso!");
+		} catch (error) {
+			toast.error("Erro ao deletar Marca");
+            console.error(error);
+		}
 	}
 
-    const handleSubmit = (event) => {
+	async function editBrand(e, brand) {
+        e.preventDefault();
+		const editedData = new FormData(e.target);
+		const jsonData = {};
+	
+		editedData.forEach((value, key) => {
+			jsonData[key] = value;	
+		});
+
+        try {
+            const response = await update(baseUrl + '/brands/update/' + encodeURI(brand._id), jsonData);
+            if (response.info?.type === 'Error') throw new Error();
+			const index = data.findIndex(item => item._id === response.updatedBrand._id);
+			const updatedItems = data;
+			updatedItems[index] = response.updatedBrand;
+			toast.success("Marca atualizada com sucesso!");
+			setData(updatedItems);
+            setLoading(false);
+			setModalOpened(false);
+        } catch (error) {
+			toast.error("Erro ao atualizar produto");
+            console.error(error);
+            setLoading(false);
+			setModalOpened(false);
+        }
+	}
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+		const editedData = new FormData(event.target);
+		const jsonData = {};
+	
+		editedData.forEach((value, key) => {
+			jsonData[key] = value;	
+		});
+
+		setLoading(true);
+		try {
+			const response = await post(baseUrl + '/brands/post/', jsonData);
+            setLoading(false);
+            if (response.info?.type === 'Error') throw new Error();
+			const { brand } = response;
+			const oldData = data;
+			oldData.push(brand);
+			setData(oldData);
+			toast.success("Marca adicionada com sucesso!");
+			setModalOpened(false);
+        } catch (error) {
+			toast.error("Erro ao adicionar marca");
+            console.error(error);
+            setLoading(false);
+        }
     };
 
   	return (
@@ -70,32 +126,12 @@ function Brand() {
 					<form onSubmit={(event) => handleSubmit(event)}>
 						<h1>Criar marca</h1>
 						<label className="flex flex-col mt-4">
-							Título:
-							<input required name="title" type="text" placeholder="Título do absorvente"/>
+							Nome:
+							<input required name="name" type="text" placeholder="Nome da marca"/>
 						</label>
 						<label className="flex flex-col mt-4">
 							Descrição:
-							<input required name="description" type="text" placeholder="Descrição do absorvente"/>
-						</label>
-						<label className="flex flex-col mt-4">
-							Tamanho:
-							<select required name="size" defaultValue={""}>
-								<option value="" hidden>Selecione</option>
-								<option value="P">P</option>
-								<option value="M">M</option>
-								<option value="G">G</option>
-								<option value="XG">XG</option>
-								<option value="XXG">XGG</option>
-							</select>
-						</label>
-						<label className="flex flex-col mt-4">
-							Tipo:
-							<select required name="type" defaultValue={""}>
-								<option value="" hidden>Selecione</option>
-								<option value="internal">Interno</option>
-								<option value="evening">Noturno</option>
-								<option value="external">Externo</option>
-							</select>
+							<textarea required name="description" type="text" placeholder="Descrição da Marca"/>
 						</label>
 						<div className="flex items-center justify-end mt-4">
 							<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
@@ -116,41 +152,26 @@ function Brand() {
             <table className="w-full text-sm text-left text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
-                    <th className="p-4" scope="col"></th>
-                    <th className="px-6 py-3" scope="col">
-                        Nome da marca
-                    </th>
-                    <th className="px-6 py-3" scope="col">
-                        Contato
-                    </th>
-                    <th className="px-6 py-3" scope="col">
-						Data da parceria
-					</th>
-                    <th className="px-6 py-3" scope="col"></th>
+						<th className="px-6 py-3" scope="col">
+							Nome da marca
+						</th>
+						<th className="px-6 py-3" scope="col">
+							Data de criação
+						</th>
+						<th className="px-6 py-3" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.length > 0 && data.map((product, index) => (
+                    {data.length > 0 && data.map((brand, index) => (
                         <tr
                             key={index}
-                            onClick={() => {}}
                             className={`border-b cursor-pointer hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}
                         >
-                            <td className="w-4 p-4">
-                                <div className="flex items-center">
-                                    <label htmlFor={`checkbox-table-search-${index}`} className="sr-only">
-                                        checkbox
-                                    </label>
-                                </div>
-                            </td>
                             <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap" scope="row">
-								<span className="font-normal text-gray-900 whitespace-nowrap">{ product.title }</span>
+								<span className="font-normal text-gray-900 whitespace-nowrap">{ brand.name }</span>
                             </th>
                             <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-								{ product.size }
-							</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-								{ product.type === 'evening' ? 'Noturno' : (product.type === 'internal' ? 'Interno' : 'Diário')  }
+								{  new Intl.DateTimeFormat('pt-BR', {}).format(new Date(brand.created)) }
 							</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <span className="font-normal text-gray-900 cursor-pointer hover:underline whitespace-nowrap">
@@ -160,35 +181,15 @@ function Brand() {
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-end w-full">
                                     <span className="material-icons-outlined mr-2 text-gray-600" onClick={() => openModal(
-										<form onSubmit={() => {}}>
+										<form onSubmit={(e) => editBrand(e, brand)}>
 											<h1>Editar parceiro</h1>
 											<label className="flex flex-col mt-4">
-												Título:
-												<input name="title" value={ product.title } type="text" placeholder="Título do absorvente"/>
+												Nome:
+												<input name="name" defaultValue={ brand.name } type="text" placeholder="Título do absorvente"/>
 											</label>
 											<label className="flex flex-col mt-4">
 												Descrição:
-												<input name="description" type="text" value={ product.description } placeholder="Título do absorvente"/>
-											</label>
-											<label className="flex flex-col mt-4">
-												Tamanho:
-												<select name="size" placeholder="Título do absorvente" defaultValue={product.size}>
-													<option value="" hidden>Selecione</option>
-													<option value="P">P</option>
-													<option value="M">M</option>
-													<option value="G">G</option>
-													<option value="XG">XG</option>
-													<option value="XXG">XGG</option>
-												</select>
-											</label>
-											<label className="flex flex-col mt-4">
-												Tipo:
-												<select name="type" defaultValue={product.type}>
-													<option value="" hidden>Selecione</option>
-													<option value="internal">Interno</option>
-													<option value="evening">Noturno</option>
-													<option value="external">Externo</option>
-												</select>
+												<textarea className="input-primary" name="description" type="text" defaultValue={ brand.description } placeholder="Título do absorvente"/>
 											</label>
 											<div className="flex items-center justify-end mt-4">
 												<button type="button" className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
@@ -203,7 +204,7 @@ function Brand() {
 											<span>Deseja realmente excluir esse produto?</span>
 											<div className="flex items-center justify-end mt-4">
 												<button className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
-												<button className="mr-2 btn" onClick={() => deleteProduct(product.id)}>Confirmar</button>
+												<button className="mr-2 btn" onClick={() => deleteBrand(brand._id)}>Confirmar</button>
 											</div>
 										</div>
 									)}>

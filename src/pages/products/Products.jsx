@@ -12,6 +12,7 @@ function Products() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [data, setData] = useState([]);
 	const [brands, setBrands] = useState([]);
+	const [donors, setDonors] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [loadingEdit, setLoadingEdit] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
@@ -33,6 +34,13 @@ function Products() {
 			if (!brands) return;
 			setBrands(brands);
 		}
+		async function getDonors() {
+			const { donors } = await get(baseUrl + '/donors/get/');
+			setLoading(false);
+			if (!donors) return;
+			setDonors(donors);
+		}
+		getDonors();
 		getProducts();
 		getBrands();
 	}, [baseUrl]);
@@ -97,6 +105,7 @@ function Products() {
 		if (!hasFlap) {
 			jsonData.flap = false;
 		}
+		jsonData.brand = jsonData.brand === '' ? null : jsonData.brand;
 		setLoading(true);
 		try {
             const response = await post(baseUrl + '/products/post/', jsonData);
@@ -234,9 +243,25 @@ function Products() {
 							</select>
 						</label>
 						<label className="flex flex-col mt-4">
+							Doador/Parceiro:
+							<div className="flex items-center">
+								{ (donors && donors.length > 0) && <select name="donor" className="mr-2" defaultValue={""}>
+									<option value="" hidden>Selecione</option>
+									{donors.map(item => (
+										<option key={item._id} value={item._id}>
+											{(item.type === 'partner' ? 'Parceiro - ' : 'Doador - ') + item.name}
+										</option>
+									))}
+								</select> }
+								<button type="button" onClick={() => route('/donor')} className="flex items-center btn">
+									<span className="material-icons-outlined">add</span>
+								</button>
+							</div>
+						</label>
+						<label className="flex flex-col mt-4">
 							Marca:
 							<div className="flex items-center">
-								{ brands && brands.length && <select defaultValue={""}>
+								{ (brands && brands.length > 0) && <select name="brand" className="mr-2" defaultValue={null}>
 									<option value="" hidden>Selecione</option>
 									{brands.map(item => (
 										<option key={item._id} value={item._id}>
@@ -244,7 +269,7 @@ function Products() {
 										</option>
 									))}
 								</select> }
-								<button type="button" onClick={() => route('/brand')} className="flex items-center ml-2 btn">
+								<button type="button" onClick={() => route('/brand')} className="flex items-center btn">
 									<span className="material-icons-outlined">add</span>
 								</button>
 							</div>
