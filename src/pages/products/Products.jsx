@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { get, post, remove, update } from '../../api';
 import LayoutPage from "../../components/LayoutPage/LayoutPage";
 import Modal from "../../components/Modal/Modal";
@@ -43,7 +45,13 @@ function Products() {
 	async function deleteProduct(productId) {
 		setData(data.filter(product => product._id !== productId));
 		setModalOpened(false);
-		await remove(baseUrl + '/products/remove/' + encodeURI(productId), );
+		try {
+			await remove(baseUrl + '/products/remove/' + encodeURI(productId));
+			toast.success("Produto deletado com sucesso!");
+		} catch (error) {
+			toast.error("Erro ao deletar produto");
+            console.error(error);
+		}
 	}
 
 	async function editProduct(e, product) {
@@ -64,11 +72,12 @@ function Products() {
 			const index = data.findIndex(item => item._id === response.updatedProduct._id);
 			const updatedItems = data;
 			updatedItems[index] = response.updatedProduct;
-		
+			toast.success("Produto atualizado com sucesso!");
 			setData(updatedItems);
             setLoadingEdit(false);
 			setModalOpened(false);
         } catch (error) {
+			toast.error("Erro ao atualizar produto");
             console.error(error);
             setLoadingEdit(false);
 			setModalOpened(false);
@@ -97,8 +106,9 @@ function Products() {
 			setData(oldData);
             setLoading(false);
 			setModalOpened(false);
-
+			toast.success("Produto adicionado com sucesso!");
         } catch (error) {
+			toast.error("Erro ao adicionar produto");
             console.error(error);
             setLoading(false);
         }
@@ -169,6 +179,7 @@ function Products() {
 	}
 
   	return (
+	<>
     <LayoutPage
 		title="Absorventes disponíveis"
 		subtitle="Gerencie os seus absorventes aqui"
@@ -306,6 +317,8 @@ function Products() {
                                     <span className="material-icons-outlined mr-2 text-red-500" onClick={() => openModal(
 										<div>
 											<span>Deseja realmente excluir esse produto?</span>
+											<br />
+											<b>* Seu produto também será removido do estoque</b>
 											<div className="flex items-center justify-end mt-4">
 												<button className="mr-2 btn error" onClick={() => setModalOpened(false)}>Cancelar</button>
 												<button className="mr-2 btn" onClick={() => deleteProduct(product._id)}>Confirmar</button>
@@ -337,7 +350,20 @@ function Products() {
 
 			{ modalOpened && <Modal opened={(e) => setModalOpened(e)} body={ modalContent }/>}
         </div>
-	}></LayoutPage>);
+	}></LayoutPage>
+	<ToastContainer
+		position="top-right"
+		autoClose={5000}
+		hideProgressBar={false}
+		newestOnTop={false}
+		closeOnClick
+		rtl={false}
+		pauseOnFocusLoss={false}
+		draggable={false}
+		pauseOnHover={false}
+		theme="colored"
+	/>
+	</>);
 }
 
 export default Products;
