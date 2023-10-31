@@ -21,7 +21,7 @@ const PrivateRoute = () => {
   function isAuthenticated() {
     let token = localStorage.getItem("token");
     let email = localStorage.getItem("email");
-    if (!token || !email) return true; // FIXME mudar aqui quando login estiver OK
+    if (!token || !email) return false;
     return true;
   }
 
@@ -41,7 +41,7 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/donor" element={<Donor />} />
           </Route>
-          <Route exact path="/" element={<Login />} />
+          <Route exact path="/login" element={<Login />} />
         </Routes>
       </Fragment>
     </Router>
