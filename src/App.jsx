@@ -13,6 +13,7 @@ import Home from "./pages/home/Home.jsx";
 import Login from "./pages/login/Login.jsx";
 import Products from "./pages/products/Products.jsx";
 import Profile from "./pages/profile/Profile.jsx";
+import Register from "./pages/register/Register.jsx";
 import Stock from "./pages/stock/Stock.jsx";
 
 import "./index.scss";
@@ -42,6 +43,7 @@ export default function App() {
             <Route path="/donor" element={<Donor />} />
           </Route>
           <Route exact path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Fragment>
     </Router>
