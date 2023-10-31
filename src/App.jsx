@@ -10,6 +10,7 @@ import {
 import Brand from "./pages/brand/Brand.jsx";
 import Donor from "./pages/donor/Donor.jsx";
 import Home from "./pages/home/Home.jsx";
+import Login from "./pages/login/Login.jsx";
 import Products from "./pages/products/Products.jsx";
 import Profile from "./pages/profile/Profile.jsx";
 import Stock from "./pages/stock/Stock.jsx";
@@ -40,7 +41,7 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/donor" element={<Donor />} />
           </Route>
-          <Route exact path="/login" element={<div> </div>} />
+          <Route exact path="/" element={<Login />} />
         </Routes>
       </Fragment>
     </Router>
