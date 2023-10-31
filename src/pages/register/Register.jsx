@@ -75,7 +75,7 @@ export default function Register() {
     return (
         <>
             <div  className={'login2 flex min-h-screen items-center justify-end mr-20 w-full relative'} >
-                <form id="login" onSubmit={(event) => login(event)}>
+                <form id="login" className='w-full' onSubmit={(event) => login(event)}>
                     <div className='flex mb-5'>
                         <h1 className='m-0 mr-2'>Fluxo </h1>
                         <h1 className='m-0'>Positivo</h1>
