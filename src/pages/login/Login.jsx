@@ -9,7 +9,7 @@ export default function Login() {
     const [ loading, setLoading ] = useState(false);
     const [ email, setEmail] = useState('');
     const [ password, setPassword] = useState('');
-    const baseUrl = "http://localhost:3001";
+    const baseUrl = process.env.REACT_APP_API_URL;
     const errors = [
         { minLength: 'Preencha com pelo menos 3 caracteres!'},
         { authError: 'Senha ou Email estão incorretos!' }
