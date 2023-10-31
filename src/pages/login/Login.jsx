@@ -28,11 +28,10 @@ export default function Login() {
 
         try {
             setLoading(true);
-            const response = await post(baseUrl + "/auth/session", { email: email, password: password  }, false);
+            const response = await post(baseUrl + "/auth/session", { email: email, password: password  });
             if (response.info?.type === 'Error') throw new Error();
             localStorage.setItem('token', response.token);
             localStorage.setItem('userId', response.user?._id);
-            localStorage.setItem('admin', response.user?.admin);
             localStorage.setItem('email', email);
             setLoading(false);
             navigate('/home');
