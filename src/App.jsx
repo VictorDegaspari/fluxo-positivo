@@ -7,6 +7,9 @@ import {
   Routes,
 } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+import { get } from "./api.js";
+import "./index.scss";
 import Brand from "./pages/brand/Brand.jsx";
 import Donor from "./pages/donor/Donor.jsx";
 import Home from "./pages/home/Home.jsx";
@@ -16,13 +19,19 @@ import Profile from "./pages/profile/Profile.jsx";
 import Register from "./pages/register/Register.jsx";
 import Stock from "./pages/stock/Stock.jsx";
 
-import "./index.scss";
+const baseUrl = process.env.REACT_APP_API_URL;
 
 const PrivateRoute = () => {
-  function isAuthenticated() {
+  const route = useNavigate();
+  async function isAuthenticated() {
     let token = localStorage.getItem("token");
     let email = localStorage.getItem("email");
-    if (!token || !email) return false;
+    get(baseUrl + "/users/find/" + localStorage.getItem("userId")).then((response) => {
+      if (response.info?.type === 'Error') throw new Error();
+    }).catch(() => { 
+      route('/login');
+    });
+    if (!token || !email) return true;
     return true;
   }
 
@@ -35,7 +44,7 @@ export default function App() {
       <Fragment>
         <Routes>
           <Route exact path="/" element={<PrivateRoute />}>
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
             <Route path="/brand" element={<Brand />} />
             <Route path="/stock" element={<Stock />} />

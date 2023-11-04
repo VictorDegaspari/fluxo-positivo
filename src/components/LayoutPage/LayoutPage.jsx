@@ -41,7 +41,7 @@ function LayoutPage(props) {
                 ) : null}
               </h2>
             </div>
-            { backButton && <div className={`flex justify-center items-center`} onClick={() => route('/home')}>
+            { backButton && <div className={`flex justify-center items-center`} onClick={() => route('/')}>
                 <span className="mr-2 material-icons-outlined cursor-pointer text-white">
                   keyboard_backspace
                 </span>

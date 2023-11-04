@@ -52,7 +52,7 @@ export default function Register() {
             localStorage.setItem('userId', response.user?._id);
             localStorage.setItem('email', email);
             setLoading(false);
-            navigate('/home');
+            navigate('/');
         } catch (error) {
             toast.error(showError('authError'));
             localStorage.clear();
