@@ -106,7 +106,7 @@ function Donor() {
 		bodyStyle="overflow: initial !important "
 		background="linear-gradient(to right, #ef4444, #fa5c5c)"
 		header={
-			<div className="table-header w-full flex items-center justify-between">
+			<div className="table-header w-full flex items-center justify-between mobile-flex-column">
                 <div className="relative">
 					<input
 						className="block w-full py-2 px-3 rounded-lg border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

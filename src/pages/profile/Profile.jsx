@@ -93,7 +93,6 @@ function Profile() {
                         <input defaultValue={formData.phone} disabled={loading} required name="phone" type="text" placeholder="(XX) XXXXX-XXXX" onChange={handleInputChange}/>
                     </label>
                     <div className="flex items-center justify-end mt-4">
-                        <button type="button" className="mr-2 btn error" onClick={() => {}}>Cancelar</button>
                         <button disabled={!hasChanges || loading} className="btn mr-2 flex items-center" type="submit">
                             <span className={ `material-icons-outlined mr-2  ${ loading ? 'animate-spin' : '' }` }>
                                 { loading ? 'autorenew' : 'check' }
