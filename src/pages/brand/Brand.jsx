@@ -13,7 +13,7 @@ function Brand() {
 	const [loading, setLoading] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-	const baseUrl = "http://localhost:3001";
+	const baseUrl = process.env.REACT_APP_API_URL;
 	
 	useEffect(() => {
 		setLoading(true);

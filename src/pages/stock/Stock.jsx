@@ -7,7 +7,6 @@ import Modal from "../../components/Modal/Modal";
 import Spinner from "../../components/Spinner/Spinner";
 import "./index.scss";
 
-
 function Stock() {
 	const [stockError, setStockError] = useState("");
 	const [data, setData] = useState([]);
@@ -18,9 +17,7 @@ function Stock() {
 	const [showStock, setShowStock] = useState(true);
 	const [showHistory, setShowHistory] = useState(true);
 	const [modalContent, setModalContent] = useState(null);
-
-
-	const baseUrl = "http://localhost:3001";
+	const baseUrl = process.env.REACT_APP_API_URL;
 
 	useEffect(() => {
 		async function getStocks() {

@@ -14,7 +14,7 @@ export default function Register() {
     const [ phone, setPhone] = useState('');
     const [ password, setPassword] = useState('');
     const [ passwordConfirm, setPasswordConfirm] = useState('');
-    const baseUrl = "http://localhost:3001";
+    const baseUrl = process.env.REACT_APP_API_URL;
     const errors = [
         { minLength: 'Preencha os campos com pelo menos 3 caracteres!' },
         { invalidPassword: 'As senhas devem ser iguais!' },
