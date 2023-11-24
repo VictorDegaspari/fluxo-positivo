@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { post } from "../../api";
 import "./index.scss";
 
+
 export default function Register() {
     const navigate = useNavigate();
     const [ error, setError] = useState('');
@@ -13,7 +14,7 @@ export default function Register() {
     const [ phone, setPhone] = useState('');
     const [ password, setPassword] = useState('');
     const [ passwordConfirm, setPasswordConfirm] = useState('');
-    const baseUrl = process.env.REACT_APP_API_URL;
+    const baseUrl = "http://localhost:3001";
     const errors = [
         { minLength: 'Preencha os campos com pelo menos 3 caracteres!' },
         { invalidPassword: 'As senhas devem ser iguais!' },
@@ -51,6 +52,7 @@ export default function Register() {
             localStorage.setItem('token', response.token);
             localStorage.setItem('userId', response.user?._id);
             localStorage.setItem('email', email);
+           
             setLoading(false);
             navigate('/');
         } catch (error) {

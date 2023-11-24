@@ -19,7 +19,7 @@ import Profile from "./pages/profile/Profile.jsx";
 import Register from "./pages/register/Register.jsx";
 import Stock from "./pages/stock/Stock.jsx";
 
-const baseUrl = process.env.REACT_APP_API_URL;
+const baseUrl ="http://localhost:3001";;
 
 const PrivateRoute = () => {
   const route = useNavigate();

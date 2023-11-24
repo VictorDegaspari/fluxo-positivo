@@ -8,6 +8,7 @@ import Modal from "../../components/Modal/Modal";
 import Spinner from "../../components/Spinner/Spinner";
 import "./index.scss";
 
+
 function Products() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [data, setData] = useState([]);
@@ -17,7 +18,7 @@ function Products() {
 	const [loadingEdit, setLoadingEdit] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-	const baseUrl = process.env.REACT_APP_API_URL;
+	const baseUrl = "http://localhost:3001";
 	const route = useNavigate();
 
 	useEffect(() => {

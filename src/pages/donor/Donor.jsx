@@ -12,7 +12,7 @@ function Donor() {
 	const [loading, setLoading] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-    const baseUrl = process.env.REACT_APP_API_URL;
+    const baseUrl = "http://localhost:3001";
 	
 	useEffect(() => {
 		setLoading(true);
