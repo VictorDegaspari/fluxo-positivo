@@ -86,7 +86,7 @@ function Profile() {
                     </label>
                     <label className="flex flex-col mt-4">
                         E-mail:
-                        <input defaultValue={formData.email} disabled={loading} required name="email" type="email" placeholder="email@teste.com" onChange={handleInputChange}/>
+                        <input defaultValue={formData.email} disabled required name="email" type="email" placeholder="email@teste.com" onChange={handleInputChange}/>
                     </label>
                     <label className="flex flex-col mt-4">
                         Telefone:
