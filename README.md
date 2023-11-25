@@ -64,5 +64,5 @@ Para testar o sistema, siga estas etapas:
 
 A seguinte conta pode ser usadas para acessar o sistema em produção (https://fluxo-positivo.vercel.app/):
 
-- Usuário: teste.@teste.com, Senha: 123
+- Usuário: teste@teste.com, Senha: 123
 
