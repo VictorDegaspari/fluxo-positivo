@@ -2,7 +2,7 @@
 
 ### 🛠️ Ferramentas Utilizadas
 
-- **React.js:** Versão ^18.2.0. [Site Oficial](https://nodejs.org/)
+- **React.js:** Versão ^18.2.0. [Site Oficial](https://react.dev/)
 
 ### 📚 Bibliotecas e Ferramentas Complementares
 
