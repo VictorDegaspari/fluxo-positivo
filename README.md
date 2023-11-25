@@ -15,7 +15,7 @@
 - **react-dom**: Versão ^18.2.0 [Site Oficial](https://pt-br.legacy.reactjs.org/docs/react-dom.html)
 - **web-vitals**: Versão ^2.1.4 [Link NPM](https://www.npmjs.com/package/web-vitals)
 
-### ⚙️ Configuração da Base de Dados
+### ⚙️ Como Executar o Projeto da API
 Acesse a [API do Fluxo Positivo](https://github.com/VictorDegaspari/fluxo-positivo-api/blob/main/README.md) para saber mais informações.
 
 ### ▶️ Como Executar o Projeto APP
@@ -31,7 +31,13 @@ Para testar o sistema acesse`http://localhost:3000` após a execução.
 
 ### 👥 Equipe do Projeto
 
-Este projeto foi desenvolvido pela equipe de alunos da UTFPR.
+Este projeto foi desenvolvido pela equipe de alunos da UTFPR do Grupo 10.
+
+- Victor Manoel Degaspari
+- Guilherme Francisco Goveia Barros
+- Guilherme Rocha Bastos
+- Paulo Rogério de Pinho
+- Caio Eike Honda Tacahashi 
 
 ### 🎯 Objetivo do Sistema
 
@@ -58,5 +64,5 @@ Para testar o sistema, siga estas etapas:
 
 A seguinte conta pode ser usadas para acessar o sistema em produção (https://fluxo-positivo.vercel.app/):
 
-- Usuário: vdegaspari.vm@gmail.com, Senha: 123
+- Usuário: teste.@teste.com, Senha: 123
 
