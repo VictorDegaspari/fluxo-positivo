@@ -16,7 +16,7 @@
 - **web-vitals**: Versão ^2.1.4 [Link NPM](https://www.npmjs.com/package/web-vitals)
 
 ### ⚙️ Configuração da Base de Dados
-Acesse a [API do Fluxo Positivo](https://github.com/VictorDegaspari/fluxo-positivo-api/edit/main/README.md) para saber mais informações.
+Acesse a [API do Fluxo Positivo](https://github.com/VictorDegaspari/fluxo-positivo-api/blob/main/README.md) para saber mais informações.
 
 ### ▶️ Como Executar o Projeto APP
 
