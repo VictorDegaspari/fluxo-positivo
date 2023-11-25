@@ -10,8 +10,8 @@ import "./index.scss";
 
 
 function Products() {
-	const [searchQuery, setSearchQuery] = useState('');
 	const [data, setData] = useState([]);
+	const [dataTotal, setDataTotal] = useState([]);
 	const [brands, setBrands] = useState([]);
 	const [donors, setDonors] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -28,6 +28,7 @@ function Products() {
 			setLoading(false);
 			if (!products) return;
 			setData(products);
+			setDataTotal(products);
 		}
 		async function getBrands() {
 			const { brands } = await get(baseUrl + '/brands/get/');
@@ -53,6 +54,7 @@ function Products() {
 
 	async function deleteProduct(productId) {
 		setData(data.filter(product => product._id !== productId));
+		setDataTotal(data);
 		setModalOpened(false);
 		try {
 			await remove(baseUrl + '/products/remove/' + encodeURI(productId));
@@ -83,6 +85,7 @@ function Products() {
 			updatedItems[index] = response.updatedProduct;
 			toast.success("Produto atualizado com sucesso!");
 			setData(updatedItems);
+			setDataTotal(updatedItems);
             setLoadingEdit(false);
 			setModalOpened(false);
         } catch (error) {
@@ -123,6 +126,13 @@ function Products() {
             setLoading(false);
         }
     };
+
+	const filtered = (value = "") => {
+		setData(dataTotal.filter((product) => product.name?.toUpperCase().includes(value.toUpperCase())));
+		if (!value) {
+			setData(dataTotal);
+		}
+	};
 
 	const productForm = (product) => {
 		return (
@@ -204,7 +214,7 @@ function Products() {
 						className="block w-full py-2 px-3 rounded-lg border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						type="text"
 						placeholder="Buscar absorvente"
-						onChange={() => {}}
+						onChange={(e) => filtered(e.target.value)}
 					/>
 					<div className="absolute top-3 right-0 flex items-center pr-3 pointer-events-none">
 						<span className="material-icons-outlined">

@@ -9,6 +9,7 @@ import "./index.scss";
 
 function Donor() {
 	const [data, setData] = useState([]);
+	const [dataTotal, setDataTotal] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
@@ -21,6 +22,7 @@ function Donor() {
 			setLoading(false);
 			if (!donors) return;
 			setData(donors);
+			setDataTotal(donors);
 		}
 		getDonors();
 	}, [baseUrl]);
@@ -32,6 +34,7 @@ function Donor() {
 
 	async function deleteDonor(stockId) {
 		setData(data.filter(product => product._id !== stockId));
+		setDataTotal(data);
 		setModalOpened(false);
 		try {
 			await remove(baseUrl + '/donors/remove/' + encodeURI(stockId));
@@ -59,6 +62,7 @@ function Donor() {
 			updatedItems[index] = response.updatedDonor;
 			toast.success("Doador atualizado com sucesso!");
 			setData(updatedItems);
+			setDataTotal(updatedItems);
             setLoading(false);
 			setModalOpened(false);
         } catch (error) {
@@ -87,6 +91,7 @@ function Donor() {
 			const oldData = data;
 			oldData.push(donor);
 			setData(oldData);
+			setDataTotal(oldData);
 			toast.success("Doador adicionado com sucesso!");
 			setModalOpened(false);
         } catch (error) {
@@ -95,6 +100,18 @@ function Donor() {
             setLoading(false);
         }
     };
+
+	const filtered = (value = "") => {
+		setData(
+			dataTotal.filter(product => product.name?.toUpperCase().includes(value.toUpperCase()) || 
+				product.email?.toUpperCase().includes(value.toUpperCase()) ||
+				product.phone?.toUpperCase().includes(value.toUpperCase())
+			)
+		);
+		if (!value) {
+			setData(dataTotal);
+		}
+	};
 
   	return (
 	<>
@@ -112,7 +129,7 @@ function Donor() {
 						className="block w-full py-2 px-3 rounded-lg border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						type="text"
 						placeholder="Buscar doador"
-						onChange={() => {}}
+						onChange={(e) => filtered(e.target.value)}
 					/>
 					<div className="absolute top-3 right-0 flex items-center pr-3 pointer-events-none">
 						<span className="material-icons-outlined">

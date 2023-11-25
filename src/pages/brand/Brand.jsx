@@ -8,8 +8,8 @@ import Spinner from "../../components/Spinner/Spinner";
 import "./index.scss";
 
 function Brand() {
-	const [searchQuery, setSearchQuery] = useState('');
 	const [data, setData] = useState([]);
+	const [dataTotal, setDataTotal] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [modalOpened, setModalOpened] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
@@ -23,6 +23,7 @@ function Brand() {
 			setLoading(false);
 			if (!brands) return;
 			setData(brands);
+			setDataTotal(brands);
 		}
 		getBrands();
 	}, [baseUrl]);
@@ -34,6 +35,7 @@ function Brand() {
 
 	async function deleteBrand(brandId) {
 		setData(data.filter(brand => brand._id !== brandId));
+		setDataTotal(data);
 		setModalOpened(false);
 		try {
 			await remove(baseUrl + '/brands/remove/' + encodeURI(brandId));
@@ -61,6 +63,7 @@ function Brand() {
 			updatedItems[index] = response.updatedBrand;
 			toast.success("Marca atualizada com sucesso!");
 			setData(updatedItems);
+			setDataTotal(updatedItems);
             setLoading(false);
 			setModalOpened(false);
         } catch (error) {
@@ -89,6 +92,7 @@ function Brand() {
 			const oldData = data;
 			oldData.push(brand);
 			setData(oldData);
+			setDataTotal(oldData);
 			toast.success("Marca adicionada com sucesso!");
 			setModalOpened(false);
         } catch (error) {
@@ -97,6 +101,13 @@ function Brand() {
             setLoading(false);
         }
     };
+
+	const filtered = (value = "") => {
+		setData(dataTotal.filter((product) => product.name?.toUpperCase().includes(value.toUpperCase())));
+		if (!value) {
+			setData(dataTotal);
+		}
+	};
 
   	return (
 	<>
@@ -114,7 +125,7 @@ function Brand() {
 						className="block w-full py-2 px-3 rounded-lg border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						type="text"
 						placeholder="Buscar parceiro"
-						onChange={() => {}}
+						onChange={(e) => filtered(e.target.value)}
 					/>
 					<div className="absolute top-3 right-0 flex items-center pr-3 pointer-events-none">
 						<span className="material-icons-outlined">
